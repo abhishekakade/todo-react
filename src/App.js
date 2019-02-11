@@ -27,30 +27,61 @@ class App extends Component {
       title: this.state.item
     };
 
-    console.log(newItem);
+    // console.log(newItem);
 
     const updatedItems = [...this.state.items, newItem];
 
-    this.setState({
-      items: updatedItems,
-      item: "",
-      id: uuid(),
-      editItem: false
-    });
+    // if statement to avoid adding empty todo
+    if (this.state.item !== "") {
+      this.setState({
+        items: updatedItems,
+        item: "",
+        id: uuid(),
+        editItem: false
+      });
+    }
   };
 
   clearList = () => {
-    // confirm('Are you sure you want to delete all the items in your To Do List?') ? this.setState({items: []}) : false;
-    this.setState({
-      items: []
-    });
+    if (!this.state.items.length) {
+      this.setState({
+        items: []
+      });
+    } else {
+      if (
+        window.confirm(
+          "Are you sure you want to delete all the items in your To Do List?"
+        )
+      ) {
+        this.setState({
+          items: []
+        });
+      }
+    }
   };
 
   handleDelete = id => {
+    if (window.confirm("Are you sure you want to delete this to-do?")) {
+      const filteredItems = this.state.items.filter(item => item.id !== id);
+      this.setState({
+        items: filteredItems
+      });
+    }
+  };
+
+  handleEdit = id => {
+    // console.log(id);
     const filteredItems = this.state.items.filter(item => item.id !== id);
 
+    const selectedItem = this.state.items.find(item => item.id === id);
+
+    console.log(selectedItem);
+
     this.setState({
-      items: filteredItems
+      items: filteredItems,
+      item: selectedItem.title,
+      editItem: true,
+      id: id
     });
   };
 
@@ -65,12 +96,14 @@ class App extends Component {
               item={this.state.item}
               handleChange={this.handleChange}
               handleSubmit={this.handleSubmit}
+              editItem={this.state.editItem}
             />
 
             <TodoList
               items={this.state.items}
               clearList={this.clearList}
               handleDelete={this.handleDelete}
+              handleEdit={this.handleEdit}
             />
           </div>
         </div>
