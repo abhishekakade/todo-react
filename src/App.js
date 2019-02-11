@@ -1,32 +1,31 @@
-import React, { Component } from 'react';
-import './App.css';
-import TodoInput from './components/TodoInput';
-import TodoList from './components/TodoList';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import uuid from 'uuid';
+import React, { Component } from "react";
+import "./App.css";
+import TodoInput from "./components/TodoInput";
+import TodoList from "./components/TodoList";
+import "bootstrap/dist/css/bootstrap.min.css";
+import uuid from "uuid";
 
 class App extends Component {
-
-  state= {
+  state = {
     items: [],
     id: uuid(),
-    item: '',
+    item: "",
     editItem: false
-  }
+  };
 
   handleChange = e => {
     this.setState({
       item: e.target.value
     });
-  }
+  };
 
   handleSubmit = e => {
     e.preventDefault();
-    
+
     const newItem = {
       id: this.state.id,
-      title: this.state.item,
-    }
+      title: this.state.item
+    };
 
     console.log(newItem);
 
@@ -34,12 +33,26 @@ class App extends Component {
 
     this.setState({
       items: updatedItems,
-      item: '',
+      item: "",
       id: uuid(),
       editItem: false
     });
-  }
+  };
 
+  clearList = () => {
+    // confirm('Are you sure you want to delete all the items in your To Do List?') ? this.setState({items: []}) : false;
+    this.setState({
+      items: []
+    });
+  };
+
+  handleDelete = id => {
+    const filteredItems = this.state.items.filter(item => item.id !== id);
+
+    this.setState({
+      items: filteredItems
+    });
+  };
 
   render() {
     return (
@@ -47,17 +60,18 @@ class App extends Component {
         <div className="row">
           <div className="col-10 mx-auto col-md-8 mt-4">
             <h3 className="text-capitalize text-center">Todo Input</h3>
-            
-            <TodoInput 
-              item={this.state.item} 
-              handleChange={this.handleChange} 
-              handleSubmit={this.handleSubmit} 
+
+            <TodoInput
+              item={this.state.item}
+              handleChange={this.handleChange}
+              handleSubmit={this.handleSubmit}
             />
 
-            <TodoList 
+            <TodoList
               items={this.state.items}
+              clearList={this.clearList}
+              handleDelete={this.handleDelete}
             />
-
           </div>
         </div>
       </div>
